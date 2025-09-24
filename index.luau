@@ -125,9 +125,10 @@ function Promise:await(suppress)
 	end 		 
 	if self.State == "pending" then
 		local thread = coroutine.running()  		
+		local resume = function(...) task.spawn(thread) end 	
 		self:next(
-			function(...) task.spawn(thread) end,--, true, ...) end,
-			function(...) task.spawn(thread) end)-- , false, ...) end) 	
+			resume,  
+			resume)   	
 		coroutine.yield()  	  	 	 	
 		return handle()  	  	  		  
 	else  	    
@@ -151,7 +152,7 @@ end
 
 return (Promise :: {
 	new: (
-		executor: (    
+		executor: (
 			resolve: (...any?) -> (),
 			reject: (reason: string, ...any?
 			) -> ()   	     
@@ -159,4 +160,3 @@ return (Promise :: {
 	isPromise: (Promise?) -> boolean, 	
 })
 
- 
